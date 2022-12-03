@@ -1,4 +1,6 @@
 using OPENPOS_API;
+using System.Globalization;
+using OPENPOS_API.NewFolder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.Use(async (context, next) =>
+{
+    AuthorizationMiddleware authorization = new AuthorizationMiddleware(next);
+    authorization.Invoke(context, builder);
+});
 
 app.UseHttpsRedirection();
 

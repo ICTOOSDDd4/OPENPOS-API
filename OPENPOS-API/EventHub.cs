@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
+using OpenPOS_API.Models;
 
 namespace OPENPOS_API
 {
@@ -9,6 +10,11 @@ namespace OPENPOS_API
         {
             Debug.WriteLine(Context.ConnectionId);
             return base.OnConnectedAsync();
+        }
+
+        internal Task SendAsync(string v, Order order)
+        {
+            throw new NotImplementedException();
         }
     }
 }
