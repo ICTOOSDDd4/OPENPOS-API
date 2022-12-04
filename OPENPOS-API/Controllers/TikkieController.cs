@@ -2,6 +2,7 @@
 using OpenPOS_API.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.SignalR;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,10 +22,24 @@ namespace OPENPOS_API.Controllers
         }
         // GET: api/<TikkieController>
         [HttpPost]
-        public async Task<IActionResult> Post([Required][FromHeader] string secret)
+        public async Task<IActionResult> PaymentNotification([FromBody] string jsonbody)
         {
-            await _hubContext.Clients.All.SendAsync("newPayment", new Order() { Id = 59 });
-            return Ok("Success");
+            dynamic eventObj = JsonConvert.DeserializeObject(jsonbody);
+            Tikkie payment = new Tikkie();
+            payment.paymentToken = eventObj.paymentToken;
+            payment.paymentRequestToken = eventObj.paymentRequestToken;
+            payment.notificationType = eventObj.notificationType;
+            payment.subscriptionId = eventObj.subscriptionId;
+            
+            await SendPaymentConformation(payment);
+            
+            return Ok(jsonbody);
+        }
+        
+        public async Task<IActionResult> SendPaymentConformation(Tikkie payment)
+        {
+            await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
+            return Ok();
         }
     }
 }
