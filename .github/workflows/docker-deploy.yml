@@ -31,5 +31,6 @@ jobs:
             git pull
             docker container stop openpos_api
             docker rm openpos_api
+            docker image prune
             docker build -t openpos-api -f ./OPENPOS-API/Dockerfile .
             docker run --name openpos_api -d -p 80:80  openpos-api
