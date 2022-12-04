@@ -21,18 +21,11 @@ namespace OPENPOS_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PaymentNotification([FromBody] string jsonbody)
+        [Route("paymentNotification")]
+        public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
         {
-            dynamic eventObj = JsonConvert.DeserializeObject(jsonbody);
-            Tikkie payment = new Tikkie();
-            payment.paymentToken = eventObj.paymentToken;
-            payment.paymentRequestToken = eventObj.paymentRequestToken;
-            payment.notificationType = eventObj.notificationType;
-            payment.subscriptionId = eventObj.subscriptionId;
-            
             await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
-            
-            return Ok("Succes");
+            return Ok("Success");
         }
     }
 }

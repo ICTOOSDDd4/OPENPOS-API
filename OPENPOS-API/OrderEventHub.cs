@@ -19,9 +19,5 @@ namespace OPENPOS_API
             throw new NotImplementedException();
         }
         
-        internal Task SendAsync(string v, Tikkie message)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
