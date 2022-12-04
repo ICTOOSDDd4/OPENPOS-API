@@ -27,8 +27,9 @@ jobs:
           host: ${{secrets.SSD_SERVER_IP}}
           username: ${{secrets.SSD_SERVER_USER}}
           password: ${{ secrets.SSD_SERVER_PASS }}
-          ssh_1: cd OPENPOS-API
-          ssh_2: git pull
-          ssh_3: docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
-          ssh_4: docker run -d -p 80:80  openpos-api-image
-
+          ssh_1: | 
+            cd OPENPOS-API
+            git pull
+            docker container stop openpos_api
+            docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
+            docker run -name openpos_api -d -p 80:80  openpos-api-image
