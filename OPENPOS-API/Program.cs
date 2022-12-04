@@ -23,7 +23,15 @@ if (app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
 {
     AuthorizationMiddleware authorization = new AuthorizationMiddleware(next);
-    await authorization.Invoke(context, builder);
+    if (context.Request.Path == "/event_hub" ||
+        context.Request.Path == "/api/order")
+    {
+        await authorization.Invoke(context, builder);
+    }
+    else
+    {
+        await next(context);
+    }
 });
 
 app.MapControllers();

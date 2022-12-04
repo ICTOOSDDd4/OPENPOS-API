@@ -31,15 +31,9 @@ namespace OPENPOS_API.Controllers
             payment.notificationType = eventObj.notificationType;
             payment.subscriptionId = eventObj.subscriptionId;
             
-            await SendPaymentConformation(payment);
-            
-            return Ok(jsonbody);
-        }
-        
-        public async Task<IActionResult> SendPaymentConformation(Tikkie payment)
-        {
             await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
-            return Ok();
+            
+            return Ok("Succes");
         }
     }
 }
