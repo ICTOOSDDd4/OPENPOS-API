@@ -21,14 +21,14 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Deploy to docker
-      uses: fifsky/ssh-action@master
+      id: ssh
+      uses: arthurvanl/action-exec-ssh@v1
       with:
           host: ${{secrets.SSD_SERVER_IP}}
-          user: ${{secrets.SSD_SERVER_USER}}
-          pass: ${{ secrets.SSD_SERVER_PASS }}
-          key:  ${{ secrets.SSD_SERVER_KEY }}
+          username: ${{secrets.SSD_SERVER_USER}}
+          password: ${{ secrets.SSD_SERVER_PASS }}
           args: "-tt -vvv"
-          command: |
+          commands: |
             cd OPENPOS-API
             ls -a
             git pull
