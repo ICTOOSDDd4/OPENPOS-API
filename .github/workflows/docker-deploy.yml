@@ -28,6 +28,7 @@ jobs:
           pass: ${{ secrets.SSD_SERVER_PASS }}
           connect_timeout: 10s
           script: |
+            "cd OPENPOS-API"
             "git pull"
             "docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile ."
             "docker run -d -p 80:80  openpos-api-image"
