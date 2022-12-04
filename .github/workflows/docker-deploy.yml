@@ -27,6 +27,7 @@ jobs:
           user: ${{secrets.SSD_SERVER_USER}}
           pass: ${{ secrets.SSD_SERVER_PASS }}
           key:  ${{ secrets.SSD_SERVER_KEY }}
+          args: "-tt -vvv"
           command: |
             cd OPENPOS-API
             ls -a
