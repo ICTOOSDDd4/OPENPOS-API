@@ -1,0 +1,36 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# change dddd
+
+name: Deployment
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+  workflow_dispatch:
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to docker
+      id: ssh
+      uses: arthurvanl/action-exec-ssh@v1
+      with:
+          host: ${{secrets.SSD_SERVER_IP}}
+          username: ${{secrets.SSD_SERVER_USER}}
+          password: ${{ secrets.SSD_SERVER_PASS }}
+          ssh_1: | 
+            cd OPENPOS-API
+            git pull
+            docker container stop openpos_api
+            docker rm openpos_api
+            docker image prune -f
+            docker build -t openpos-api -f ./OPENPOS-API/Dockerfile .
+            docker run --name openpos_api -d -p 80:80  openpos-api
