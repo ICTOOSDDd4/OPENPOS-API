@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenPOS_API.Models;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,15 +12,14 @@ namespace OPENPOS_API.Controllers
     [ApiController]
     public class TikkieController : ControllerBase
     {
-        private readonly IHubContext<EventHub> _hubContext;
+        private readonly IHubContext<TikkieEventHub> _hubContext;
 
         private readonly IConfiguration _configuration;
-        public TikkieController(IConfiguration configuration, IHubContext<EventHub> hubContext)
+        public TikkieController(IHubContext<TikkieEventHub> hubContext)
         {
-            _configuration = configuration;
             _hubContext = hubContext;
         }
-        // GET: api/<TikkieController>
+
         [HttpPost]
         public async Task<IActionResult> PaymentNotification([FromBody] string jsonbody)
         {

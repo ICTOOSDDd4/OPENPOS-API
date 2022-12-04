@@ -38,6 +38,9 @@ app.MapControllers();
 
 app.MapHub<EventHub>("/event_hub");
 
+app.MapHub<TikkieEventHub>("/tikkie_event");
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
