@@ -23,14 +23,16 @@ if (app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
 {
     AuthorizationMiddleware authorization = new AuthorizationMiddleware(next);
-    authorization.Invoke(context, builder);
+    await authorization.Invoke(context, builder);
 });
+
+app.MapControllers();
+
+app.MapHub<EventHub>("/event_hub");
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapHub<EventHub>("/event_hub");
 
 app.Run();
