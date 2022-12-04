@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
     - name: Deploy to docker
       id: ssh
       uses: arthurvanl/action-exec-ssh@v1
@@ -32,4 +31,4 @@ jobs:
             git pull
             docker container stop openpos_api
             docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
-            docker run -name openpos_api -d -p 80:80  openpos-api-image
+            docker run --name openpos_api -d -p 80:80  openpos-api-image
