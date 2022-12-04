@@ -24,9 +24,7 @@ app.UseSwaggerUI();
 
 app.UseMiddleware<AuthorizationMiddleware>();
 
-app.MapHub<EventHub>("/event_hub");
-
-app.MapHub<TikkieEventHub>("/tikkie_event");
+Events.Initialize(app);
 
 app.MapControllers();
 
