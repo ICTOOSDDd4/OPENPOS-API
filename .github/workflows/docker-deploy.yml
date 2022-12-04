@@ -27,8 +27,10 @@ jobs:
           user: ${{secrets.SSD_SERVER_USER}}
           pass: ${{ secrets.SSD_SERVER_PASS }}
           key:  ${{ secrets.SSD_SERVER_KEY }}
-          command: cd OPENPOS-API
-          command: git pull
-          command:  docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
-          command: docker run -d -p 80:80  openpos-api-image
+          command: |
+            cd OPENPOS-API
+            ls -a
+            git pull
+            docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
+            docker run -d -p 80:80  openpos-api-image
 
