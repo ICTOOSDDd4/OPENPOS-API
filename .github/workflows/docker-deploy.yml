@@ -1,0 +1,32 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# change dddd
+
+name: Continuous integration
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+  workflow_dispatch:
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to docker
+      uses: tzzs/server-shell@v3
+      with:
+          PRIVATE_KEY: ${{ secrets.SSD_SERVER}}
+          USERNAME: ${{secrets.SSD_SERVER_USER}}
+          IP: ${{secrets.SSD_SERVER_IP}}
+          SHELL: |
+            "git pull"
+            "docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile ."
+            "docker run -d -p 80:80  openpos-api-image"
