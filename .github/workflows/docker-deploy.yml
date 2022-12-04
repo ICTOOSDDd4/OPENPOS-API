@@ -30,5 +30,8 @@ jobs:
           command: |
             cd OPENPOS-API
             ls -a
-
+            git pull
+            docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile .
+            docker run -d -p 80:80  openpos-api-image
+            exit 1
 
