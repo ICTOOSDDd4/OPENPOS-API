@@ -27,6 +27,6 @@ jobs:
           host: ${{secrets.SSD_SERVER_IP}}
           username: ${{secrets.SSD_SERVER_USER}}
           password: ${{ secrets.SSD_SERVER_PASS }}
-          commands: cd OPENPOS-API
+          commands: 'cd OPENPOS-API'
 
 
