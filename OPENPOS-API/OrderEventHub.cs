@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.SignalR;
 using OpenPOS_API.Models;
-using OPENPOS_API.NewFolder;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace OPENPOS_API
