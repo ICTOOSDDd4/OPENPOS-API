@@ -21,12 +21,13 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Deploy to docker
-      uses: tzzs/server-shell@v3
+      uses: cross-the-world/ssh-pipeline@master
       with:
-          PRIVATE_KEY: ${{ secrets.SSD_SERVER}}
-          USERNAME: ${{secrets.SSD_SERVER_USER}}
-          IP: ${{secrets.SSD_SERVER_IP}}
-          SHELL: |
+          host: ${{secrets.SSD_SERVER_IP}}
+          user: ${{secrets.SSD_SERVER_USER}}
+          pass: ${{ secrets.SSD_SERVER_PASS }}
+          connect_timeout: 10s
+          script: |
             "git pull"
             "docker build -t openpos-api-image -f ./OPENPOS-API/Dockerfile ."
             "docker run -d -p 80:80  openpos-api-image"
