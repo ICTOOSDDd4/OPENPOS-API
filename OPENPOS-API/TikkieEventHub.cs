@@ -11,12 +11,10 @@ namespace OPENPOS_API
             Debug.WriteLine(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
-
-        internal Task SendAsync(string v, Tikkie payment)
-        {
-            Debug.WriteLine(Context.ConnectionId);
-            return Clients.All.SendAsync(v, payment);
-        }
         
+        internal Task SendAsync(string v, Order order)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

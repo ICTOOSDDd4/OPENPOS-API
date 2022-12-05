@@ -3,6 +3,7 @@ using OpenPOS_API.Models;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
+using OPENPOS_API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,21 +17,47 @@ namespace OPENPOS_API.Controllers
 
         private readonly IConfiguration _configuration;
         private Tikkie _tikkie;
-        public TikkieController(IHubContext<TikkieEventHub> hubContext)
+        private Dictionary<string, string> _listeners = new();
+        public TikkieController(IHubContext<TikkieEventHub> hubContext, IConfiguration configuration)
         {
             _hubContext = hubContext;
+            if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
+            {
+                TikkieService.CreateTikkieAppToken(configuration);
+            }
+            else
+            {
+                TikkieService.SubscribeToNotifications(configuration);
+            }
         }
 
+        [HttpGet]
+        [Route("GetAppToken")]
+        public Task<string> GetAppToken([Required] [FromHeader] string secret)
+        {
+            return Task.FromResult(TikkieService._tikkieAppToken);
+        }
+
+        [HttpPost]
+        [Route("AddToPaymentListener")]
+        public async Task<IActionResult> AddToListener([Required] [FromHeader] string connectionId, [Required] [FromHeader] string paymentRequestToken)
+        {
+            _listeners.Add(paymentRequestToken, connectionId);
+            return Ok("Added with success");
+        }
+        
         [HttpPost]
         [Route("paymentNotification")]
         public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
         {
-            if (payment.notificationType == "PAYMENT")
-            {
-                // await _hubContext.Clients.Client().SendAsync("PaymentConformation", payment);
-                await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
-                return Ok("Success");
-            }
+            // if (payment.notificationType == "PAYMENT")
+            // {
+                if(_listeners.TryGetValue(payment.paymentRequestToken, out string connectionId))
+                {
+                    await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
+                    return Ok("Success"); 
+                }
+            // }
             return Problem("Error");
         }
         
