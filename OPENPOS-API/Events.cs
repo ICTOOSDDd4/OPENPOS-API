@@ -4,7 +4,7 @@
     {
         public static void Initialize(WebApplication app)
         {
-            app.MapHub<EventHub>("/event_hub");
+            app.MapHub<OrderEventHub>("/order_event");
 
             app.MapHub<TikkieEventHub>("/tikkie_event");
         }

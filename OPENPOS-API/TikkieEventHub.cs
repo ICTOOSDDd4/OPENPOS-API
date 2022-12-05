@@ -14,7 +14,9 @@ namespace OPENPOS_API
 
         internal Task SendAsync(string v, Tikkie payment)
         {
-            throw new NotImplementedException();
+            Debug.WriteLine(Context.ConnectionId);
+            return Clients.All.SendAsync(v, payment);
         }
+        
     }
 }

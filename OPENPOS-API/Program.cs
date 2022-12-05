@@ -26,6 +26,10 @@ app.UseMiddleware<AuthorizationMiddleware>();
 
 Events.Initialize(app);
 
+// app.MapHub<OrderEventHub>("/order_event");
+//
+// app.MapHub<TikkieEventHub>("/tikkie_event");
+
 app.MapControllers();
 
 app.UseHttpsRedirection();

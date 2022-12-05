@@ -15,6 +15,7 @@ namespace OPENPOS_API.Controllers
         private readonly IHubContext<TikkieEventHub> _hubContext;
 
         private readonly IConfiguration _configuration;
+        private Tikkie _tikkie;
         public TikkieController(IHubContext<TikkieEventHub> hubContext)
         {
             _hubContext = hubContext;
@@ -24,8 +25,14 @@ namespace OPENPOS_API.Controllers
         [Route("paymentNotification")]
         public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
         {
-            await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
-            return Ok("Success");
+            if (payment.notificationType == "PAYMENT")
+            {
+                // await _hubContext.Clients.Client().SendAsync("PaymentConformation", payment);
+                await _hubContext.Clients.All.SendAsync("PaymentConformation", payment);
+                return Ok("Success");
+            }
+            return Problem("Error");
         }
+        
     }
 }

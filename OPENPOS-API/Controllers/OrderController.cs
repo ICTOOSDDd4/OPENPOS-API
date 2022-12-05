@@ -11,10 +11,10 @@ namespace OPENPOS_API.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IHubContext<EventHub> _hubContext;
+        private readonly IHubContext<OrderEventHub> _hubContext;
 
         private readonly IConfiguration _configuration;
-        public OrderController(IConfiguration configuration, IHubContext<EventHub> hubContext)
+        public OrderController(IConfiguration configuration, IHubContext<OrderEventHub> hubContext)
         {
             _configuration = configuration;
             _hubContext = hubContext;

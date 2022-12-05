@@ -5,7 +5,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace OPENPOS_API
 {
-    public class EventHub : Hub
+    public class OrderEventHub : Hub
     {
         public override Task OnConnectedAsync()
         {
