@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenPOS_API.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
 using OPENPOS_API.Services;
@@ -17,7 +18,6 @@ namespace OPENPOS_API.Controllers
 
         private readonly IConfiguration _configuration;
         private Tikkie _tikkie;
-        private Dictionary<string, string> _listeners = new();
         public TikkieController(IHubContext<TikkieEventHub> hubContext, IConfiguration configuration)
         {
             _hubContext = hubContext;
@@ -40,9 +40,9 @@ namespace OPENPOS_API.Controllers
 
         [HttpPost]
         [Route("AddToPaymentListener")]
-        public async Task<IActionResult> AddToListener([Required] [FromHeader] string connectionId, [Required] [FromHeader] string paymentRequestToken)
+        public async Task<IActionResult> AddToListener([FromBody] Listener listen )
         {
-            _listeners.Add(paymentRequestToken, connectionId);
+            Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
             return Ok("Added with success");
         }
         
@@ -50,15 +50,15 @@ namespace OPENPOS_API.Controllers
         [Route("paymentNotification")]
         public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
         {
-            // if (payment.notificationType == "PAYMENT")
-            // {
-                if(_listeners.TryGetValue(payment.paymentRequestToken, out string connectionId))
+            if (payment.notificationType == "PAYMENT")
+            {
+                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out string connectionId))
                 {
                     await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
                     return Ok("Success"); 
                 }
-            // }
-            return Problem("Error");
+            }
+            return Problem($"Error: {Listeners._listeners.Count} " );
         }
         
     }
