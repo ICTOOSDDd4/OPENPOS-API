@@ -29,6 +29,7 @@ namespace OPENPOS_API.Controllers
         public async Task<IActionResult> Post([FromBody] Order order)
         {
             await _hubContext.Clients.All.SendAsync("newOrder", order);
+
             return Ok("Success");
         }
         
