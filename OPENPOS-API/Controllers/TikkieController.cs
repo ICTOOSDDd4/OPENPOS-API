@@ -22,13 +22,8 @@ namespace OPENPOS_API.Controllers
         {
             _hubContext = hubContext;
             if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
-            {
-                TikkieService.CreateTikkieAppToken(configuration);
-            }
-            else
-            {
-                TikkieService.SubscribeToNotifications(configuration);
-            }
+            { TikkieService.CreateTikkieAppToken(configuration); }
+            else { TikkieService.SubscribeToNotifications(configuration); }
         }
 
         [HttpGet]
@@ -40,10 +35,10 @@ namespace OPENPOS_API.Controllers
 
         [HttpPost]
         [Route("AddToPaymentListener")]
-        public async Task<IActionResult> AddToListener([FromBody] Listener listen )
+        public Task<IActionResult> AddToListener([FromBody] Listener listen )
         {
             Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
-            return Ok("Added with success");
+            return Task.FromResult<IActionResult>(Ok("Added with success"));
         }
         
         [HttpPost]
@@ -52,7 +47,7 @@ namespace OPENPOS_API.Controllers
         {
             if (payment.notificationType == "PAYMENT")
             {
-                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out string connectionId))
+                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out var connectionId))
                 {
                     await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
                     return Ok("Success"); 
