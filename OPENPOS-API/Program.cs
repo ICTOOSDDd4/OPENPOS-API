@@ -15,6 +15,7 @@ builder.Services.AddSignalR();
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
@@ -25,10 +26,6 @@ app.UseSwaggerUI();
 app.UseMiddleware<AuthorizationMiddleware>();
 
 Events.Initialize(app);
-
-// app.MapHub<OrderEventHub>("/order_event");
-//
-// app.MapHub<TikkieEventHub>("/tikkie_event");
 
 app.MapControllers();
 
