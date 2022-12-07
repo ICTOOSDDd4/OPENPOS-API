@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenPOS_API.Models;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNet.SignalR;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.SignalR;
+using OPENPOS_API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,20 +14,47 @@ namespace OPENPOS_API.Controllers
     [ApiController]
     public class TikkieController : ControllerBase
     {
-        private readonly IHubContext<EventHub> _hubContext;
+        private readonly IHubContext<TikkieEventHub> _hubContext;
 
         private readonly IConfiguration _configuration;
-        public TikkieController(IConfiguration configuration, IHubContext<EventHub> hubContext)
+        private Tikkie _tikkie;
+        public TikkieController(IHubContext<TikkieEventHub> hubContext, IConfiguration configuration)
         {
-            _configuration = configuration;
             _hubContext = hubContext;
+            if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
+            { TikkieService.CreateTikkieAppToken(configuration); }
+            else { TikkieService.SubscribeToNotifications(configuration); }
         }
-        // GET: api/<TikkieController>
-        [HttpPost]
-        public async Task<IActionResult> Post([Required][FromHeader] string secret)
+
+        [HttpGet]
+        [Route("GetAppToken")]
+        public Task<string> GetAppToken([Required] [FromHeader] string secret)
         {
-            await _hubContext.Clients.All.SendAsync("newPayment", new Order() { Id = 59 });
-            return Ok("Success");
+            return Task.FromResult(TikkieService._tikkieAppToken);
         }
+
+        [HttpPost]
+        [Route("AddToPaymentListener")]
+        public Task<IActionResult> AddToListener([FromBody] Listener listen )
+        {
+            Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
+            return Task.FromResult<IActionResult>(Ok("Added with success"));
+        }
+        
+        [HttpPost]
+        [Route("paymentNotification")]
+        public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
+        {
+            if (payment.notificationType == "PAYMENT")
+            {
+                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out var connectionId))
+                {
+                    await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
+                    return Ok("Success"); 
+                }
+            }
+            return Problem($"Error: {Listeners._listeners.Count} " );
+        }
+        
     }
 }

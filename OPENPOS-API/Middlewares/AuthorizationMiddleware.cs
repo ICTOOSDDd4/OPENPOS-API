@@ -2,23 +2,31 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace OPENPOS_API.NewFolder
+namespace OPENPOS_API.Middlewares
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class AuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IConfiguration _configuration;
 
-        public AuthorizationMiddleware(RequestDelegate next)
+        private readonly List<string> ExcludedEndpoints = new List<string>()
+        {
+            "/api/Tikkie/paymentNotification"
+        };
+
+        public AuthorizationMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
+            _configuration = configuration;
         }
 
-        public async Task Invoke(HttpContext context, WebApplicationBuilder builder)
+        public async Task Invoke(HttpContext context)
         {
-            string apiSecret = builder.Configuration.GetValue<string>("secret");
+            string apiSecret = _configuration.GetValue<string>("secret");
             string requestSecret = context.Request.Headers["secret"];
-            if (!string.IsNullOrWhiteSpace(requestSecret) && requestSecret == apiSecret)
+
+            if (!string.IsNullOrWhiteSpace(requestSecret) && requestSecret == apiSecret || ExcludedEndpoints.Contains(context.Request.Path))
             {
                 await _next(context);
             }
