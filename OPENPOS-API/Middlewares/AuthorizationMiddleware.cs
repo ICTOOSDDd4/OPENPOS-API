@@ -12,7 +12,7 @@ namespace OPENPOS_API.Middlewares
 
         private readonly List<string> ExcludedEndpoints = new List<string>()
         {
-            "/api/Tikkie/paymentNotification"
+            "api/Tikkie/paymentNotification"
         };
 
         public AuthorizationMiddleware(RequestDelegate next, IConfiguration configuration)
