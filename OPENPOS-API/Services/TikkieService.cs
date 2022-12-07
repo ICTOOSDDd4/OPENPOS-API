@@ -29,7 +29,7 @@ public static class TikkieService
         
         var client = new RestClient(config.GetValue<string>("TikkieBaseUrl"));
         var request = new RestRequest("/paymentrequestssubscription");
-        request.AddHeader("X-App-Token", _tikkieAppToken);
+        request.AddHeader("X-App-Token", config.GetValue<string>("TikkieAppToken"));
         request.AddHeader("Accept", "application/json");
         request.AddHeader("API-Key", config.GetValue<string>("TikkieBaseUrl"));
         request.AddBody(new
