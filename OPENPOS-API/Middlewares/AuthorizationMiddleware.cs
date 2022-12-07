@@ -12,7 +12,7 @@ namespace OPENPOS_API.Middlewares
 
         private readonly List<string> ExcludedEndpoints = new List<string>()
         {
-            "api/Tikkie/paymentNotification"
+            "/api/Tikkie/paymentNotification"
         };
 
         public AuthorizationMiddleware(RequestDelegate next, IConfiguration configuration)
@@ -25,7 +25,6 @@ namespace OPENPOS_API.Middlewares
         {
             string apiSecret = _configuration.GetValue<string>("secret");
             string requestSecret = context.Request.Headers["secret"];
-
             if (!string.IsNullOrWhiteSpace(requestSecret) && requestSecret == apiSecret || ExcludedEndpoints.Contains(context.Request.Path))
             {
                 await _next(context);
