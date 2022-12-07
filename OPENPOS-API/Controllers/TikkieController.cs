@@ -55,6 +55,11 @@ namespace OPENPOS_API.Controllers
             }
             return Problem($"Error: {Listeners._listeners.Count} " );
         }
-        
+        [HttpPost]
+        [Route("ping")]
+        public IActionResult Ping([FromBody] Tikkie ping)
+        {
+            return Ok("pong");
+        }
     }
 }
