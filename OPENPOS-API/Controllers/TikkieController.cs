@@ -27,8 +27,8 @@ namespace OPENPOS_API.Controllers
             }
             else
             {
-                TikkieService.SubscribeToNotifications(configuration);
                 TikkieService.SetAppToken(configuration);
+                TikkieService.SubscribeToNotifications(configuration);
             }
         }
 

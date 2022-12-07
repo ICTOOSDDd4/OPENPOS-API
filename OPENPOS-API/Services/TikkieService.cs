@@ -37,7 +37,7 @@ public static class TikkieService
         var request = new RestRequest("/paymentrequestssubscription");
         request.AddHeader("X-App-Token", _tikkieAppToken);
         request.AddHeader("Accept", "application/json");
-        request.AddHeader("API-Key", config.GetValue<string>("TikkieBaseUrl"));
+        request.AddHeader("API-Key", config.GetValue<string>("TikkieAPIKey"));
         request.AddBody(new
         {
            url = "http://api.alphadev.nl/api/Tikkie/paymentNotification"
