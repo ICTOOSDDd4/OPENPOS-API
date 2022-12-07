@@ -28,9 +28,9 @@ namespace OPENPOS_API.Controllers
 
         [HttpGet]
         [Route("GetAppToken")]
-        public Task<string> GetAppToken([Required] [FromHeader] string secret)
+        public string GetAppToken([Required] [FromHeader] string secret)
         {
-            return Task.FromResult(TikkieService._tikkieAppToken);
+            return TikkieService._tikkieAppToken;
         }
 
         [HttpPost]
