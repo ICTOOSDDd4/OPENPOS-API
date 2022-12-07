@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.SignalR;
 using OPENPOS_API.Services;
 
+//
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OPENPOS_API.Controllers
@@ -22,8 +23,13 @@ namespace OPENPOS_API.Controllers
         {
             _hubContext = hubContext;
             if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
-            { TikkieService.CreateTikkieAppToken(configuration); }
-            else { TikkieService.SubscribeToNotifications(configuration); }
+            {
+                TikkieService.CreateTikkieAppToken(configuration);
+            }
+            else
+            {
+                TikkieService.SubscribeToNotifications(configuration);
+            }
         }
 
         [HttpGet]
