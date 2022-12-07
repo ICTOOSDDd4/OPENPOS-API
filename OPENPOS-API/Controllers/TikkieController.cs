@@ -35,10 +35,10 @@ namespace OPENPOS_API.Controllers
 
         [HttpPost]
         [Route("AddToPaymentListener")]
-        public Task<IActionResult> AddToListener([FromBody] Listener listen )
+        public IActionResult AddToListener([FromBody] Listener listen )
         {
             Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
-            return Task.FromResult<IActionResult>(Ok("Added with success"));
+            return Ok("Added with success");
         }
         
         [HttpPost]
