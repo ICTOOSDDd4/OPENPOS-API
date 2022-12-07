@@ -14,6 +14,7 @@ namespace OPENPOS_API.Controllers
         private readonly IHubContext<OrderEventHub> _hubContext;
 
         private readonly IConfiguration _configuration;
+
         public OrderController(IConfiguration configuration, IHubContext<OrderEventHub> hubContext)
         {
             _configuration = configuration;
@@ -24,11 +25,16 @@ namespace OPENPOS_API.Controllers
         /// Send a new event with order
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Post([Required][FromHeader] string secret)
+        [Route("newOrder")]
+        public async Task<IActionResult> Post([FromBody] Order order)
         {
-            await _hubContext.Clients.All.SendAsync("newOrder", new Order() {Id = 59});
-            
+            await _hubContext.Clients.All.SendAsync("newOrder", order);
             return Ok("Success");
         }
+        
+
+        
+
+
     }
 }
