@@ -34,7 +34,7 @@ public static class TikkieService
         request.AddHeader("API-Key", config.GetValue<string>("TikkieBaseUrl"));
         request.AddBody(new
         {
-           url = "http://localhost:5175/api/Tikkie/paymentNotification"
+           url = "http://api.alphadev.nl/api/Tikkie/paymentNotification"
         });
             
         RestResponse response = client.Execute(request);
