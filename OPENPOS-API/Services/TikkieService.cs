@@ -24,12 +24,18 @@ public static class TikkieService
             _tikkieAppToken = obj["appToken"]?.ToString();
         } else Debug.WriteLine("No content");
     }
+
+    public static bool SetAppToken(IConfiguration config)
+    {
+        _tikkieAppToken = config.GetValue<string>("TikkieAppToken");
+        return true;
+    }
     public static bool SubscribeToNotifications(IConfiguration config)
     {
         
         var client = new RestClient(config.GetValue<string>("TikkieBaseUrl"));
         var request = new RestRequest("/paymentrequestssubscription");
-        request.AddHeader("X-App-Token", config.GetValue<string>("TikkieAppToken"));
+        request.AddHeader("X-App-Token", _tikkieAppToken);
         request.AddHeader("Accept", "application/json");
         request.AddHeader("API-Key", config.GetValue<string>("TikkieBaseUrl"));
         request.AddBody(new
