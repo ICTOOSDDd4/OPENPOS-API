@@ -10,6 +10,7 @@ namespace OPENPOS_API
         {
             Debug.WriteLine(Context.ConnectionId);
             return base.OnConnectedAsync();
+            
         }
         
         internal Task SendAsync(string v, Order order)
