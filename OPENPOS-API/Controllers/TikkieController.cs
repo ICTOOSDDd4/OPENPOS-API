@@ -28,14 +28,15 @@ namespace OPENPOS_API.Controllers
             else
             {
                 TikkieService.SubscribeToNotifications(configuration);
+                TikkieService.SetAppToken(configuration);
             }
         }
 
         [HttpGet]
         [Route("GetAppToken")]
-        public string GetAppToken([Required] [FromHeader] string secret)
+        public IActionResult GetAppToken([Required] [FromHeader] string secret)
         {
-            return TikkieService._tikkieAppToken;
+            return Ok(TikkieService._tikkieAppToken);
         }
 
         [HttpPost]
