@@ -7,10 +7,6 @@ on:
     branches:
       - "master"
 
-#   pull_request:
-#     branches:
-#       - "master"
-
   workflow_dispatch:
 
 jobs:
@@ -30,8 +26,8 @@ jobs:
               ssh_1: |
                 cd OPENPOS-API
                 git pull
-                docker container stop openpos_api
-                docker rm openpos_api
+                docker container stop openpos_api_v1
+                docker rm openpos_api_v1
                 docker image prune -f
-                docker build -t openpos-api -f ./OPENPOS-API/Dockerfile .
-                docker run --name openpos_api -d -p 80:80  openpos-api
+                docker build -t openpos-api-v1 -f ./OPENPOS-API/Dockerfile .
+                docker run --name openpos_api_v1 -d -p 80:80  openpos-api-v1
