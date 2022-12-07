@@ -15,12 +15,11 @@ namespace OPENPOS_API.Controllers
     public class TikkieController : ControllerBase
     {
         private readonly IHubContext<TikkieEventHub> _hubContext;
-
-        private readonly IConfiguration _configuration;
-        private Tikkie _tikkie;
+        
         public TikkieController(IHubContext<TikkieEventHub> hubContext, IConfiguration configuration)
         {
             _hubContext = hubContext;
+            // Setting up Tikkie API
             if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
             {
                 TikkieService.CreateTikkieAppToken(configuration);
@@ -36,7 +35,7 @@ namespace OPENPOS_API.Controllers
         [Route("GetAppToken")]
         public IActionResult GetAppToken([Required] [FromHeader] string secret)
         {
-            return Ok(TikkieService._tikkieAppToken);
+            return Ok(TikkieService.TikkieAppToken);
         }
 
         [HttpPost]

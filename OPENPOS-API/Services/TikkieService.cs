@@ -8,7 +8,7 @@ namespace OPENPOS_API.Services;
 
 public static class TikkieService
 {
-    public static string _tikkieAppToken;
+    public static string TikkieAppToken = "Empty";
     public static void CreateTikkieAppToken(IConfiguration config)
     {
         var client = new RestClient(config.GetValue<string>("TikkieBaseUrl"));
@@ -21,26 +21,30 @@ public static class TikkieService
         if (content != null)
         {
             var obj = JObject.Parse(content);
-            _tikkieAppToken = obj["appToken"]?.ToString();
+            TikkieAppToken = obj["appToken"]?.ToString();
         } else Debug.WriteLine("No content");
     }
 
     public static bool SetAppToken(IConfiguration config)
     {
-        _tikkieAppToken = config.GetValue<string>("TikkieAppToken");
+        TikkieAppToken = config.GetValue<string>("TikkieAppToken");
         return true;
     }
     public static bool SubscribeToNotifications(IConfiguration config)
     {
-        
+        if (TikkieAppToken == "Empty")
+        {
+            throw new Exception("TikkieAppToken is empty");
+        }
         var client = new RestClient(config.GetValue<string>("TikkieBaseUrl"));
-        var request = new RestRequest("/paymentrequestssubscription");
-        request.AddHeader("X-App-Token", _tikkieAppToken);
+        var request = new RestRequest("/paymentrequestssubscription", Method.Post);
+        request.AddHeader("X-App-Token", TikkieAppToken);
+        request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Accept", "application/json");
         request.AddHeader("API-Key", config.GetValue<string>("TikkieAPIKey"));
         request.AddBody(new
         {
-           url = "http://api.alphadev.nl/api/Tikkie/paymentNotification"
+           url = "http://bore.pub:41025/api/Tikkie/paymentNotification"
         });
             
         RestResponse response = client.Execute(request);
@@ -49,7 +53,7 @@ public static class TikkieService
             var obj = JObject.Parse(response.Content);
             if (obj["errors"] != null) // If API returns an error.
             {
-                throw new Exception($"Error: {obj["errors"][0]?["message"]} ");
+                throw new Exception($"Error: {obj["errors"].ToString()} | {obj["errors"][0]?["message"]} ");
             }
             return true;
         }
