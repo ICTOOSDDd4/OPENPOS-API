@@ -20,10 +20,7 @@ namespace OPENPOS_API.Controllers
             _configuration = configuration;
             _hubContext = hubContext;
         }
-
-        /// <summary>
-        /// Send a new event with order
-        /// </summary>
+        
         [HttpPost]
         [Route("newOrder")]
         public async Task<IActionResult> Post([FromBody] Order order)

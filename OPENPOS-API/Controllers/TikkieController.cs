@@ -15,12 +15,11 @@ namespace OPENPOS_API.Controllers
     public class TikkieController : ControllerBase
     {
         private readonly IHubContext<TikkieEventHub> _hubContext;
-
-        private readonly IConfiguration _configuration;
-        private Tikkie _tikkie;
+        
         public TikkieController(IHubContext<TikkieEventHub> hubContext, IConfiguration configuration)
         {
             _hubContext = hubContext;
+            // Setting up Tikkie API
             if (configuration.GetValue<string>("TikkieAppToken").Length == 0)
             {
                 TikkieService.CreateTikkieAppToken(configuration);
@@ -36,14 +35,22 @@ namespace OPENPOS_API.Controllers
         [Route("GetAppToken")]
         public IActionResult GetAppToken([Required] [FromHeader] string secret)
         {
-            return Ok(TikkieService._tikkieAppToken);
+            return Ok(TikkieService.TikkieAppToken);
+        }
+        
+        [HttpGet]
+        [Route("RemovePaymentRequest")]
+        public IActionResult RemovePaymentRequest([Required] [FromHeader] string paymentRequestToken)
+        {
+            Listeners.ListenersDict.Remove(paymentRequestToken);
+            return Ok();
         }
 
         [HttpPost]
         [Route("AddToPaymentListener")]
         public IActionResult AddToListener([FromBody] Listener listen )
         {
-            Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
+            Listeners.ListenersDict.Add(listen.paymentRequestToken, listen.connectionId);
             return Ok("Added with success");
         }
         
@@ -53,13 +60,13 @@ namespace OPENPOS_API.Controllers
         {
             if (payment.notificationType == "PAYMENT")
             {
-                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out var connectionId))
+                if(Listeners.ListenersDict.TryGetValue(payment.paymentRequestToken, out var connectionId))
                 {
                     await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
                     return Ok("Success"); 
                 }
             }
-            return Problem($"Error: {Listeners._listeners.Count} " );
+            return Problem($"Error: {Listeners.ListenersDict.Count} " );
         }
         [HttpPost]
         [Route("ping")]
