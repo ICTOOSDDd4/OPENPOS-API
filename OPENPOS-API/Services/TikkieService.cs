@@ -44,7 +44,7 @@ public static class TikkieService
         request.AddHeader("API-Key", config.GetValue<string>("TikkieAPIKey"));
         request.AddBody(new
         {
-           url = "http://bore.pub:43707/api/Tikkie/paymentNotification"
+           url = config.GetValue<string>("BaseUrl") + "/api/Tikkie/paymentNotification"
         });
             
         RestResponse response = client.Execute(request);
