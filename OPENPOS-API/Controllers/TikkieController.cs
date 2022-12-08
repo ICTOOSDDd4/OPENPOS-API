@@ -37,12 +37,20 @@ namespace OPENPOS_API.Controllers
         {
             return Ok(TikkieService.TikkieAppToken);
         }
+        
+        [HttpGet]
+        [Route("RemovePaymentRequest")]
+        public IActionResult RemovePaymentRequest([Required] [FromHeader] string paymentRequestToken)
+        {
+            Listeners.ListenersDict.Remove(paymentRequestToken);
+            return Ok();
+        }
 
         [HttpPost]
         [Route("AddToPaymentListener")]
         public IActionResult AddToListener([FromBody] Listener listen )
         {
-            Listeners._listeners.Add(listen.paymentRequestToken, listen.connectionId);
+            Listeners.ListenersDict.Add(listen.paymentRequestToken, listen.connectionId);
             return Ok("Added with success");
         }
         
@@ -52,13 +60,13 @@ namespace OPENPOS_API.Controllers
         {
             if (payment.notificationType == "PAYMENT")
             {
-                if(Listeners._listeners.TryGetValue(payment.paymentRequestToken, out var connectionId))
+                if(Listeners.ListenersDict.TryGetValue(payment.paymentRequestToken, out var connectionId))
                 {
                     await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
                     return Ok("Success"); 
                 }
             }
-            return Problem($"Error: {Listeners._listeners.Count} " );
+            return Problem($"Error: {Listeners.ListenersDict.Count} " );
         }
         [HttpPost]
         [Route("ping")]

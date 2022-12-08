@@ -2,5 +2,5 @@
 
 public static class Listeners
 {
-    public static Dictionary<string, string> _listeners = new();
+    public static Dictionary<string, string> ListenersDict = new();
 }
