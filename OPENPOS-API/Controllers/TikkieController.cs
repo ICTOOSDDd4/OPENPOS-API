@@ -50,7 +50,7 @@ namespace OPENPOS_API.Controllers
         [Route("AddToPaymentListener")]
         public IActionResult AddToListener([FromBody] Listener listen )
         {
-            Listeners.ListenersDict.Add(listen.paymentRequestToken, listen.connectionId);
+            Listeners.ListenersDict.Add(listen.PaymentRequestToken, listen.ConnectionId);
             return Ok("Added with success");
         }
         
@@ -58,21 +58,15 @@ namespace OPENPOS_API.Controllers
         [Route("paymentNotification")]
         public async Task<IActionResult> PaymentNotification([FromBody] Tikkie payment )
         {
-            if (payment.notificationType == "PAYMENT")
+            if (payment.NotificationType == "PAYMENT")
             {
-                if(Listeners.ListenersDict.TryGetValue(payment.paymentRequestToken, out var connectionId))
+                if(Listeners.ListenersDict.TryGetValue(payment.PaymentRequestToken, out var connectionId))
                 {
                     await _hubContext.Clients.Client(connectionId).SendAsync("PaymentConformation", payment);
                     return Ok("Success"); 
                 }
             }
             return Problem($"Error: {Listeners.ListenersDict.Count} " );
-        }
-        [HttpPost]
-        [Route("ping")]
-        public IActionResult Ping([FromBody] Tikkie ping)
-        {
-            return Ok("pong");
         }
     }
 }
