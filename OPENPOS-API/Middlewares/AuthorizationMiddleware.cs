@@ -10,7 +10,7 @@ namespace OPENPOS_API.Middlewares
         private readonly RequestDelegate _next;
         private readonly IConfiguration _configuration;
 
-        private readonly List<string> ExcludedEndpoints = new List<string>()
+        private readonly List<string> _excludedEndpoints = new List<string>()
         {
             "/api/Tikkie/paymentNotification"
         };
@@ -23,9 +23,9 @@ namespace OPENPOS_API.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            string apiSecret = _configuration.GetValue<string>("secret");
+            string apiSecret = _configuration.GetValue<string>("secret") ?? throw new InvalidOperationException();
             string requestSecret = context.Request.Headers["secret"];
-            if (!string.IsNullOrWhiteSpace(requestSecret) && requestSecret == apiSecret || ExcludedEndpoints.Contains(context.Request.Path))
+            if (!string.IsNullOrWhiteSpace(requestSecret) && requestSecret == apiSecret || _excludedEndpoints.Contains(context.Request.Path))
             {
                 await _next(context);
             }

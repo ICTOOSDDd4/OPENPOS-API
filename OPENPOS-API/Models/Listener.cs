@@ -2,6 +2,8 @@
 
 public class Listener
 {
-    public string paymentRequestToken { get; set; }
-    public string  connectionId { get; set; }
+    public string PaymentRequestToken { get; set; }
+    public string  ConnectionId { get; set; }
+    
+    // No constructor needed, only used to pass on objects
 }

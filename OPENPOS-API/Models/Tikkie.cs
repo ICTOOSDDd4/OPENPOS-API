@@ -2,9 +2,10 @@
 
 public class Tikkie
 {
-    public string subscriptionId { get; set; }
-    public string notificationType { get; set; }
-    public string paymentRequestToken { get; set; }
-    public string paymentToken { get; set; }
+    public string SubscriptionId { get; set; }
+    public string NotificationType { get; set; }
+    public string PaymentRequestToken { get; set; }
+    public string PaymentToken { get; set; }
     
+    // No constructor needed, only used to pass on objects
 }
